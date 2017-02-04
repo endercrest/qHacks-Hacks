@@ -22,49 +22,15 @@ def split(string):
             break
 
     return linespl[0], linespl[1]
-    
-   # print(linespl)
-    
- #   line = re.split(r'[(]+', string)
-#    print(line)
 
 def restFormat(function, rest):
- #   r = re.compile(r'(?:[^,(]|\([^)]*\))+')
- #   r.findall(rest)
-
-##    findF = ''
-##    listOfFs = []
-##    countQs = 0
-##    for el in rest:
-##        if el[0] == '"' and (countQs is not 2):
-##            countQs += 1
-##            continue
-##        else:
-##            findF += el
-##        if countQs == 2:
-##            countQs = 0
-##            print(findF)
-##            findF = ''
-
-    listOfFs = []
-    for func in FUNCTION_DEFS:
-        index = rest.find(func)
-        if index >= 0:
-            listOfFs.append({'Func': func, 'Index': index}) 
-            print(func, index)
-
-# csv to delimit a string
-##    restList = []
-##    for line in reader(rest):
-##        restList.append(line)
-##    print(restList)
-
     restList = []
     temp = []
     countQ = 0
+    digitFlag = 0
     for i in rest:
         if i == '"':
-            countQ += 1;
+            countQ += 1
             if countQ == 2:
                 countQ = 0
                 temp.append('"')
@@ -82,12 +48,7 @@ def restFormat(function, rest):
             restList.append(temp)
             temp = []
             continue
-        if countQ == 0 and i == '.':
-            temp.append('.')
-            restList.append(temp)
-            temp = []
-            continue
-        elif countQ == 0 and i.isdigit():
+        elif countQ == 0 and (i.isdigit() or i == '.'):
             temp.append(i)
             restList.append(temp)
             temp = []
@@ -96,6 +57,17 @@ def restFormat(function, rest):
             temp.append(i)
             restList.append(temp)
             temp = []
+            continue
+        elif countQ == 0 and (i == '+' or i == '-' or i == '/' or i == '*'):
+            temp.append(i)
+            restList.append(temp)
+            temp = []
+            continue
+        elif countQ == 0 and i == '=':
+            temp.append(i)
+            restList.append(temp)
+            temp = []
+            continue
         elif i is not ' ':
             temp.append(i)
             if i == '(':
@@ -103,66 +75,67 @@ def restFormat(function, rest):
                 temp = []
                 continue
 
-    print(restList)
+ #   print(restList)
 
     lis = []
     lis.append({'Value': function, 'Type': 'function'})
-
+    temp = []
+    num = ''
     for i in restList:
+        funcFound = False
         part = ''.join(i)
+        for func in FUNCTION_DEFS:
+            if part.find(func) >= 0:
+                funcFound = True
+                continue
         if i == ' ' or i == '':
             continue
-        if i[0].isdigit():
-            i = float(i[0])
-        if type(i) is float:
-            lis.append({'Value': i, 'Type': 'float'})
-        elif i == '+' or i == '-' or i == '/' or i == '*' or i == ',':
-           lis.append({'Value': part, 'Type': 'op'})
-        elif i == '.':
-          lis.append({'Value': part, 'Type': 'dec'})
-        elif i == '=':
+        elif i[0].isdigit():
+            temp.append(i[0])
+            continue
+        if i[0] == '+' or i[0] == '-' or i[0] == '/' or i[0] == '*' or i[0] == ',':
+            num = ''.join(temp)
+            if num is not '':
+                lis.append({'Value': num, 'Type': 'float'})
+            lis.append({'Value': part, 'Type': 'op'})
+            num = ''
+            temp = []
+        elif i[0] == '.':
+            num = ''.join(temp)
+            if num is not '':
+                lis.append({'Value': num, 'Type': 'float'})
+            lis.append({'Value': part, 'Type': 'decimal'})
+            num = ''
+            temp = []
+        elif i[0] == '=':
+            num = ''.join(temp)
+            if num is not '':
+                lis.append({'Value': num, 'Type': 'float'})
             lis.append({'Value': part, 'Type': 'ass'})
-        elif type(i[0]) is str:
-            lis.append({'Value': part, 'Type': 'string'})
-        else:
+            num = ''
+            temp = []
+        elif i[0] == ')':
+            num = ''.join(temp)
+            if num is not '':
+                lis.append({'Value': num, 'Type': 'float'})
+            lis.append({'Value': part, 'Type': 'bracket'})
+            num = ''
+            temp = []
+        elif funcFound == True:
             lis.append({'Value': part, 'Type': 'function'})
+            funcFound = False
+        else:
+            lis.append({'Value': part, 'Type': 'string'})
             
     print(lis)
- #   other = (re.split(r'[,)]+', rest))
- #   formatString = 
-#    codeDict = {'Value': other[0], 'Type': 
-#    print (insideQ)
-   # print(insideQ)
 
 def main():
-    function, rest = split('print("Hello 2,World", round(3.14), "1", "T", abs(12))')
-    print(function)
-    print(rest)
+    string = 'print("Hello 2,World", round(3.14), 1=3+4, "T", abs(12))'
+    print(string)
+    function, rest = split(string)
     restFormat(function, rest)
 
 main()
-
-
-
-##    restList = []
-##    fullFunc = []
-##    count = 0
-##    funcCount = 0
-##    for line in reader(rest):
-##        print(len(line))
-##        if count >= int(listOfFs[funcCount]['Index']):
-##            fullFunc.append(line)
-##            count += 1
-##            continue
-##        elif count == len(listOfFs[funcCount]['Func'])+count:
-##            restList.append(fullFunc)
-##            count += 1
-##            funcCount = 0
-##            continue
-##        restList.append(line)
-##        count += 1
-##    print(restList)
-
 
 
     

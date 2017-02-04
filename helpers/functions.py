@@ -78,13 +78,21 @@ FUNCTION_DEFS = {
 
 
 def functiontoenglish(name):
-    """"
+    """
     Converts the given function to english version of what it does. The string will
     contain a {} of where the rest of the text should go.
 
-    If the function is not found, the function will return -1.
+    :return: If the function is not found, the function will return -1.
     """
     if name in FUNCTION_DEFS:
         return FUNCTION_DEFS[name]
     else:
         return -1
+
+
+def allfunctions():
+    """
+    This function returns a list of all the functions that have an english translation.
+    :return: A list of function names.
+    """
+    return FUNCTION_DEFS.keys()

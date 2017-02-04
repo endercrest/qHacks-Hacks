@@ -1,13 +1,24 @@
 import re
 from csv import reader
 
+FUNCTION_DEFS = {
+    'abs(', 'dict(', 'help(', 'min(', 'setattr(', 'all(', 'dir(', 'hex(', 'next(', 'slice(',
+    'any(', 'divmod(', 'id(', 'object(', 'sorted(', 'ascii(', 'enumerate(', 'input(', 'oct(',
+    'staticmethod(', 'bin(', 'eval(', 'int(', 'open(', 'str(', 'bool(', 'exec(', 'isinstance(',
+    'ord(', 'sum(', 'bytearray(', 'filter(', 'issubclass(', 'pow(', 'super(', 'bytes(', 'float(',
+    'iter(', 'print(', 'tuple(', 'callable(', 'format(', 'len(','property(', 'type(', 'chr(',
+    'frozenset(', 'list(', 'range(', 'vars(','classmethod(', 'getattr(', 'locals(', 'repr(', 'zip(',
+    'compile(', 'globals(', 'map(', 'reversed(', 'complex(', 'hasattr(', 'max(', 'round(', 'delattr(',
+    'hash(', 'memoryview(', 'set('
+}
+
 def split(string):
     for i in string:
         if i == ' ':
-            linespl = (re.split(r'[ ]+', string))
+            linespl = (re.split(r'[ ]+', string, 1))
             break
         elif i == '(':
-            linespl = re.split(r'[(]+', string)
+            linespl = re.split(r'[(]+', string, 1)
             break
 
     return linespl[0], linespl[1]
@@ -64,7 +75,7 @@ def restFormat(function, rest):
                 temp = []
                 continue
 
- #   print(restList)
+                #   print(restList)
 
     lis = []
     lis.append({'Value': function, 'Type': 'function'})
@@ -115,14 +126,11 @@ def restFormat(function, rest):
             funcFound = False
         else:
             lis.append({'Value': part, 'Type': 'string'})
-            
-    print(lis)
 
-def main():
-    string = 'print("Hello 2,World", round(3.14), 1=3+4, "T", abs(12))'
-    print(string)
+    return lis
+
+
+def parse(string):
     function, rest = split(string)
-    restFormat(function, rest)
+    return restFormat(function, rest)
 
-main()
-    

@@ -51,7 +51,7 @@ def restFormat(function, rest):
         index = rest.find(func)
         if index >= 0:
             listOfFs.append({'Func': func, 'Index': index}) 
-            print(func, index)
+            ## print(func, index)
 
 # csv to delimit a string
 ##    restList = []
@@ -103,7 +103,7 @@ def restFormat(function, rest):
                 temp = []
                 continue
 
-    print(restList)
+    ##print(restList)
 
     lis = []
     lis.append({'Value': function, 'Type': 'function'})
@@ -127,12 +127,22 @@ def restFormat(function, rest):
         else:
             lis.append({'Value': part, 'Type': 'function'})
             
-    print(lis)
+    return lis
  #   other = (re.split(r'[,)]+', rest))
  #   formatString = 
 #    codeDict = {'Value': other[0], 'Type': 
 #    print (insideQ)
    # print(insideQ)
+
+
+def parse(string):
+    """
+
+    :param string:
+    :return:
+    """
+    function, rest = split(string)
+    return restFormat(function, rest)
 
 def main():
     function, rest = split('print("Hello 2,World", round(3.14), "1", "T", abs(12))')
@@ -140,7 +150,7 @@ def main():
     print(rest)
     restFormat(function, rest)
 
-main()
+## main()
 
 
 

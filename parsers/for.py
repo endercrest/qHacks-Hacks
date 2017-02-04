@@ -1,17 +1,15 @@
 import re
 from helpers.functions import allfunctions
-#  for
-# i in range(0,9)
-# i in "HI"
-
-# for variable : {"value": "i", "type": "var"}
-# for in : {"value" : "in", "type": "loop"} NOT SURE IF THIS IS THE TYPE WE WANT
-# for range(0, 9): {"value": [{"value": "", "type": "function"}, {"value": 0, "type": "float"}, {"value": 9, type: "float"}], "type": "special"]
-
-# f = [{"Value": "for", "Type": "loop"}, {"Value": "in", "Type": "loop"}]
+from Translate import parse
 
 
 def parsefor(raw):
+    """
+    Parses a string in the format of a for statement.
+
+    :param raw: The raw form of the for loop. IE. "i in range(0,9)"
+    :return: Returns a list of maps.
+    """
     lom = [{"Value": "for", "Type": "loop"}]
 
     parts = []
@@ -26,14 +24,8 @@ def parsefor(raw):
     for i in range(2, len(parts)):
         combined += " " + parts[i]
     if parts[2].split("(")[0] in allfunctions():
-        # TODO Call Sean's function to parse.
-        lom.append({"Value": "TODO", "Type": "forfunction"})
+        lom.append({"Value": parse(combined), "Type": "forfunction"})
     else:
         lom.append({"Value": combined, "Type": "forstring"})
 
-    print(lom)
-
     return lom
-
-parsefor("i in \"Hello!\"")
-parsefor("i in range(0, 9)")

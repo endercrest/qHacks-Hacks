@@ -53,32 +53,81 @@ def restFormat(function, rest):
             listOfFs.append({'Func': func, 'Index': index}) 
             print(func, index)
 
+# csv to delimit a string
+##    restList = []
+##    for line in reader(rest):
+##        restList.append(line)
+##    print(restList)
+
     restList = []
-    for line in reader(rest):
-        if line == 
-        restList.append(line)
+    temp = []
+    countQ = 0
+    for i in rest:
+        if i == '"':
+            countQ += 1;
+            if countQ == 2:
+                countQ = 0
+                temp.append('"')
+                restList.append(temp)
+                temp = []
+                continue
+        if countQ == 1:
+            if i == '"':
+                temp.append('"')
+            else:
+                temp.append(i)
+            continue
+        if countQ == 0 and i == ',':
+            temp.append(',')
+            restList.append(temp)
+            temp = []
+            continue
+        if countQ == 0 and i == '.':
+            temp.append('.')
+            restList.append(temp)
+            temp = []
+            continue
+        elif countQ == 0 and i.isdigit():
+            temp.append(i)
+            restList.append(temp)
+            temp = []
+            continue
+        elif countQ == 0 and i == ')':
+            temp.append(i)
+            restList.append(temp)
+            temp = []
+        elif i is not ' ':
+            temp.append(i)
+            if i == '(':
+                restList.append(temp)
+                temp = []
+                continue
+
     print(restList)
 
     lis = []
     lis.append({'Value': function, 'Type': 'function'})
 
     for i in restList:
-        if i[0] == ' ' or i[0] == '' or i[0] == ')':
+        part = ''.join(i)
+        if i == ' ' or i == '':
             continue
         if i[0].isdigit():
             i = float(i[0])
         if type(i) is float:
             lis.append({'Value': i, 'Type': 'float'})
-        elif i[0] == '+' or i[0] == '-' or i[0] == '/' or i[0] == '*':
-           lis.append({'Value': i[0], 'Type': 'op'})
-        elif i[0] == '=':
-            lis.append({'Value': i[0], 'Type': 'ass'})
+        elif i == '+' or i == '-' or i == '/' or i == '*' or i == ',':
+           lis.append({'Value': part, 'Type': 'op'})
+        elif i == '.':
+          lis.append({'Value': part, 'Type': 'dec'})
+        elif i == '=':
+            lis.append({'Value': part, 'Type': 'ass'})
         elif type(i[0]) is str:
-            lis.append({'Value': i[0], 'Type': 'string'})
+            lis.append({'Value': part, 'Type': 'string'})
         else:
-            lis.append({'Value': i[0], 'Type': 'function'})
+            lis.append({'Value': part, 'Type': 'function'})
             
- #   print(lis)
+    print(lis)
  #   other = (re.split(r'[,)]+', rest))
  #   formatString = 
 #    codeDict = {'Value': other[0], 'Type': 

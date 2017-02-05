@@ -2,7 +2,6 @@ import re
 from helpers.functions import allfunctions
 from Translate import parse
 
-
 def parsefor(raw):
     """
     Parses a string in the format of a for statement.

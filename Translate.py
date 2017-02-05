@@ -46,7 +46,7 @@ def parseExpression(rest):
                 prev = '"'
                 continue
         if countQ == 1:
-            if i == '"':
+            if i == '"' or i =="'":
                 temp.append('"')
                 prev = '"'
             else:
@@ -140,7 +140,7 @@ def parseExpression(rest):
             lis.append({'Value': part, 'Type': 'function'})
             funcFound = False
         else:
-            if part[0] is not '"':
+            if part[0] is not '"' and part[0] is not "'":
                 last = part[-1]
                 start = part[:-1]
                 if last not in SPECIAL_CHARS:
@@ -160,7 +160,56 @@ def parseif(raw):
     :param raw: The raw form of the for loop. IE. "i in range(0,9)"
     :return: Returns a list of maps.
     """
-    lom = [{"Value": "if", "Type": "conditional"}]
+    lom = [{"Value": "if", "Type": "loop"}]
+
+    bracket = False
+    for i in raw:
+        if i == "(":
+            bracket = True
+            break
+        elif i == " ":
+            raw = raw[1:]
+        else:
+            break
+    if raw[-1:] == ":":
+        raw = raw[:-1]
+    expression = raw
+    if bracket:
+        expression = raw[1:-1]
+
+    parseExpression(expression)
+
+    lom.append({"Value": parseExpression(expression), "Type": "forfunction"})
+
+    return lom
+
+def parseelif(raw):
+    """
+    Parses a string in the format of a while statement.
+
+    :param raw: The raw form of the for loop. IE. "i in range(0,9)"
+    :return: Returns a list of maps.
+    """
+    lom = [{"Value": "elif", "Type": "loop"}]
+
+    bracket = False
+    for i in raw:
+        if i == "(":
+            bracket = True
+            break
+        elif i == " ":
+            raw = raw[1:]
+        else:
+            break
+    if raw[-1:] == ":":
+        raw = raw[:-1]
+    expression = raw
+    if bracket:
+        expression = raw[1:-1]
+
+    parseExpression(expression)
+
+    lom.append({"Value": parseExpression(expression), "Type": "forfunction"})
 
     return lom
 
@@ -232,6 +281,8 @@ def parsefunction(string):
         return parseif(rest)
     elif function == "for":
         return parsefor(rest)
+    elif function == "elif":
+        return parseelif(rest)
 
     ls = (parseExpression(rest))
     if (function is not 'for' or function is not 'while' or function is not 'if') and function is not '' and function is not ' ':

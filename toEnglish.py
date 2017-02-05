@@ -10,10 +10,7 @@ def mapToEnglish(lom):
         elif lom[i]['Type'] == 'ass':
             sentence.append(" is assigned to ")
         elif lom[i]['Type'] == 'float':
-            if ((i<len(lom)-1) and ((lom[i+1]['Type'] == 'op'))) or ((i>0) and ((lom[i-1]['Type'] == 'op') or (lom[i-1]['Type'] == 'function' or (lom[i-1]['Type'] == 'cmp')))):
-                sentence.append("the number " + lom[i]['Value'])
-            else:
-                sentence.append("the string " + lom[i]['Value'])
+            sentence.append("the number " + lom[i]['Value'])
         elif lom[i]['Type'] == 'string':
             sentence.append("the string " + lom[i]['Value'])
         elif lom[i]['Type'] == 'var':
@@ -24,7 +21,7 @@ def mapToEnglish(lom):
             if(lom[i]['Value'] == '+'):
                 sentence.append(" added with ")
             elif(lom[i]['Value'] == '-'):
-                if ((i<0) and (lom[i-1]['Type'] != 'float')):
+                if ((i>0) and (lom[i-1]['Type'] != 'float')):
                     sentence.append(" negative of ")
                 else:
                     sentence.append(" subtracted by ")
@@ -65,7 +62,9 @@ def mapToEnglish(lom):
 
 LOOPNAMES = {"for":" a for loop where ",
              "in":" in the ",
-             "while": " a while loop where "}
+             "while": " a while loop where ",
+             "if": " if ",
+             "elif": " else "}
 
 def loops(loopName):
     if loopName in LOOPNAMES:

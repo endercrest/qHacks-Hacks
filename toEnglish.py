@@ -5,7 +5,6 @@ def mapToEnglish(lom):
     sentence = []
     i = 0
     while(i<len(lom)):
-        print(lom[i]['Type'],(i,lom[i]['Value'], len(lom)))
         if lom[i]['Type'] == 'function':
             sentence.append(functiontoenglish(lom[i]['Value']))
         elif lom[i]['Type'] == 'ass':
@@ -45,7 +44,6 @@ def mapToEnglish(lom):
             sentence.append(" compared to ")
 
         elif(lom[i]['Type'] == 'forfunction'):
-            print (i, lom[i]['Type'], lom[i]['Value'])
             sentence.append(mapToEnglish(lom[i]['Value']))
 
         elif(lom[i]['Type'] == 'forstring'):
@@ -61,7 +59,6 @@ def mapToEnglish(lom):
             i = i + 1
         i = i + 1
 
-    print(sentence)
     x =("".join(sentence))
     return(x[0].upper() + x[1:])
 

@@ -211,11 +211,6 @@ def whileparse(raw):
 
 def parsefunction(string):
     function, rest = split(string)
-    ls = (parseExpression(rest))
-    if function is not 'for' or function is not 'while' or function is not 'if':
-        ls.insert(0, {'Value': function+'(', 'Type': 'function'})
-    else:
-        ls.insert(0, {'Value': function, 'Type': 'function'})
 
     if function == "while":
         return whileparse(rest)
@@ -223,6 +218,8 @@ def parsefunction(string):
         return parseif(rest)
     elif function == "for":
         return parsefor(rest)
-    return ls
 
-print(parsefunction("while(x > 1)"))
+    ls = (parseExpression(rest))
+    if function is not 'for' or function is not 'while' or function is not 'if':
+        ls.insert(0, {'Value': function+'(', 'Type': 'function'})
+    return ls

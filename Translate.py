@@ -10,6 +10,10 @@ FUNCTION_DEFS = {
     'frozenset(', 'list(', 'range(', 'vars(','classmethod(', 'getattr(', 'locals(', 'repr(', 'zip(',
     'compile(', 'globals(', 'map(', 'reversed(', 'complex(', 'hasattr(', 'max(', 'round(', 'delattr(',
     'hash(', 'memoryview(', 'set('
+} 
+
+SPECIAL_CHARS = {
+    '+':'op', '-':'op', '/':'op', '*':'op', ',':'op', '<':'op', '>':'op', '.':'decimal', ')':'bracket', '=':'ass'
 }
 
 def split(string):
@@ -48,24 +52,13 @@ def restFormat(function, rest):
             restList.append(temp)
             temp = []
             continue
-        elif countQ == 0 and (i.isdigit() or i == '.'):
-            temp.append(i)
-            restList.append(temp)
-            temp = []
-            continue
-        elif countQ == 0 and i == ')':
-            temp.append(i)
-            restList.append(temp)
-            temp = []
-            continue
-        elif countQ == 0 and (i == '+' or i == '-' or i == '/' or i == '*'):
-            temp.append(i)
-            restList.append(temp)
-            temp = []
-            continue
-        elif countQ == 0 and i == '=':
-            temp.append(i)
-            restList.append(temp)
+        elif countQ == 0 and ((i.isdigit() or i == '.') or (i == '+' or i == '-' or i == '/' or i == '*') or  i == ')' or i == '='):
+            if restList[-1][-1] == '=' and i == '=':
+                temp.append('==')
+                restList[-1] = temp
+            else:
+                temp.append(i)
+                restList.append(temp)
             temp = []
             continue
         elif i is not ' ':
@@ -75,7 +68,7 @@ def restFormat(function, rest):
                 temp = []
                 continue
 
-                #   print(restList)
+    #print(restList)
 
     lis = []
     lis.append({'Value': function, 'Type': 'function'})
@@ -84,10 +77,8 @@ def restFormat(function, rest):
     for i in restList:
         funcFound = False
         part = ''.join(i)
-        for func in FUNCTION_DEFS:
-            if part.find(func) >= 0:
-                funcFound = True
-                continue
+        if part in FUNCTION_DEFS:
+            funcFound = True
         if i == ' ' or i == '':
             continue
         elif i[0].isdigit():
@@ -114,6 +105,13 @@ def restFormat(function, rest):
             lis.append({'Value': part, 'Type': 'ass'})
             num = ''
             temp = []
+        elif i[0] == '==':
+            num = ''.join(temp)
+            if num is not '':
+                lis.append({'Value': num, 'Type': 'float'})
+            lis.append({'Value': part, 'Type': 'cmp'})
+            num = ''
+            temp = []
         elif i[0] == ')':
             num = ''.join(temp)
             if num is not '':
@@ -125,12 +123,31 @@ def restFormat(function, rest):
             lis.append({'Value': part, 'Type': 'function'})
             funcFound = False
         else:
-            lis.append({'Value': part, 'Type': 'string'})
+            if part[0] is not '"':
+                print(part)
+                last = part[-1]
+                start = part[:-1]
+                if last not in SPECIAL_CHARS:
+                    lis.append({'Value': part, 'Type': 'var'})
+                else:
+                    lis.append({'Value': start, 'Type': 'var'})
+                    lis.append({'Value': last, 'Type': SPECIAL_CHARS[last]})
+            else:
+                lis.append({'Value': part, 'Type': 'string'})
+    return lis            
 
-    return lis
-
-
-def parse(string):
+    
+def main():
+    string = 'print("Hello 2,World", round(3.14), 7=3+4, "T", abs(12), xab, 4==4)'
+    print(string)
     function, rest = split(string)
-    return restFormat(function, rest)
+    lis = restFormat(function, rest)
+    print('-----\n\n')
+          
+ #   for i in lis:
+#        print(i['Value'], i['Type'], '-----')
 
+main()
+
+
+    

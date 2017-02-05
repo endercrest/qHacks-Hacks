@@ -10,11 +10,19 @@ def mapToEnglish(lom):
         elif lom[i]['Type'] == 'ass':
             sentence.append(" is assigned to ")
         elif lom[i]['Type'] == 'float':
-            sentence.append("the number " + lom[i]['Value'])
+            if ((i<len(lom)-1) and ((lom[i+1]['Type'] == 'op'))) or ((i>0) and ((lom[i-1]['Type'] == 'op') or (lom[i-1]['Type'] == 'function' or (lom[i-1]['Type'] == 'cmp')))):
+                sentence.append("the number " + lom[i]['Value'])
+            else:
+                sentence.append("the string " + lom[i]['Value'])
         elif lom[i]['Type'] == 'string':
             sentence.append("the string " + lom[i]['Value'])
         elif lom[i]['Type'] == 'var':
-            sentence.append("the variable " + lom[i]['Value'])
+            if lom[i]['Value'] == "True":
+                sentence("the boolean 'True'")
+            elif lom[i]['Value'] == "False":
+                sentence("the boolean 'False'")
+            else:
+                sentence.append("the variable " + lom[i]['Value'])   
         elif lom[i]['Type'] == 'comma':
             sentence.append(" and then it")
         elif lom[i]['Type'] == 'op':
@@ -62,9 +70,7 @@ def mapToEnglish(lom):
 
 LOOPNAMES = {"for":" a for loop where ",
              "in":" in the ",
-             "while": " a while loop where ",
-             "if": " if ",
-             "elif": " else "}
+             "while": " a while loop where "}
 
 def loops(loopName):
     if loopName in LOOPNAMES:

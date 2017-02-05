@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
-
+from helpers.py2face import pythontoenglish
 
 class App(Frame): # calling a bunch of classes in the main app frame
     def __init__(self, master, **kw):
@@ -20,9 +20,7 @@ class App(Frame): # calling a bunch of classes in the main app frame
         self.userOutput = answerbox(self)
         self.userOutput.pack()
 
-        
-        
-# FIXME Currently text box allows new line, need to remove this.
+
 class Form(Frame):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
@@ -40,7 +38,8 @@ class Form(Frame):
  
     def read_input(self, event = None): #read and update return statement from input
         # TODO Add parsing system and get returned text.
-        self.master.outbox.updateoutput(self.input.get("1.0", '2.0'))
+        self.master.outbox.updateoutput(pythontoenglish(self.input.get("1.0", '2.0')))
+        #self.master.outbox.updateoutput(self.input.get("1.0", '2.0'))
         return "break"
 
         
@@ -69,8 +68,6 @@ class answerLabels(Frame): #Labels for the answers
         self.label1.pack()
 
 
-
-
 class answerbox(Frame): #The user answer in terms of code and evaluated answer is printed here
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
@@ -79,22 +76,3 @@ class answerbox(Frame): #The user answer in terms of code and evaluated answer i
         self.RightTextbox = Text(self, width = 45, height = 15) #create right textbox (evaluated output0
         self.RightTextbox.pack(side=RIGHT)
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

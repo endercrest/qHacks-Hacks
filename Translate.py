@@ -34,6 +34,7 @@ def parseExpression(rest):
     temp = []
     countQ = 0
     digitFlag = 0
+    prev = ''
     for i in rest:
         if i == '"':
             countQ += 1
@@ -42,30 +43,45 @@ def parseExpression(rest):
                 temp.append('"')
                 restList.append(temp)
                 temp = []
+                prev = '"'
                 continue
         if countQ == 1:
             if i == '"':
                 temp.append('"')
+                prev = '"'
             else:
                 temp.append(i)
+                prev = i
             continue
         if countQ == 0 and i == ',':
             temp.append(',')
             restList.append(temp)
             temp = []
+            prev = ','
             continue
-        elif countQ == 0 and ((i.isdigit() or i == '.') or (
-                        i == '+' or i == '-' or i == '/' or i == '*') or i == ')' or i == '='):
-            if restList[-1][-1] == '=' and i == '=':
+        elif countQ == 0 and (i.isdigit() or i == '.'):
+            temp.append(i)
+            restList.append(temp)
+            temp = []
+            prev = i
+            continue
+        elif countQ == 0 and ((i == '+' or i == '-' or i == '/' or i == '*') or i == ')' or (i == '<' or i == '>') or i == '='):
+            if temp is not [] and prev is not '=':
+                restList.append(temp)
+                temp = []
+            if i == '=' and prev == '=':
                 temp.append('==')
                 restList[-1] = temp
+                prev = '=='
             else:
                 temp.append(i)
                 restList.append(temp)
+                prev = i
             temp = []
             continue
         elif i is not ' ':
             temp.append(i)
+            prev = i
             if i == '(':
                 restList.append(temp)
                 temp = []
@@ -77,11 +93,12 @@ def parseExpression(rest):
     temp = []
     num = ''
     for i in restList:
+        print(i)
         funcFound = False
         part = ''.join(i)
         if part in FUNCTION_DEFS:
             funcFound = True
-        if i == ' ' or i == '':
+        if i == ' ' or i == '' or i == []:
             continue
         elif i[0].isdigit():
             temp.append(i[0])
@@ -135,6 +152,7 @@ def parseExpression(rest):
                     lis.append({'Value': last, 'Type': SPECIAL_CHARS[last]})
             else:
                 lis.append({'Value': part, 'Type': 'string'})
+    print(lis)
     return lis
 
 
@@ -223,3 +241,5 @@ def parsefunction(string):
     if function is not 'for' or function is not 'while' or function is not 'if':
         ls.insert(0, {'Value': function+'(', 'Type': 'function'})
     return ls
+
+print(parsefunction("print(1 + 12 + 3)"))

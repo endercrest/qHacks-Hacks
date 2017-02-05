@@ -25,21 +25,25 @@ class Form(Frame):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
         self.input = Text(self, height=1, wrap=NONE, pady=10, padx=10) 
-        self.input.bind('<Return>', self.read_input) #bind user input to return and reads it
+        self.input.bind('<Return>', self.exectute_code) #bind user input to return and reads it
         self.input.pack()
-        self.button = Button(self, text="Read", command=self.read_input) #button reads user input
-        self.button.bind('<Return>', self.read_input)
+        self.button = Button(self, text="Read", command=self.exectute_code) #button reads user input
+        self.button.bind('<Return>', self.exectute_code)
         self.button.pack(side=LEFT)
         self.clr = Button(self, text="Clear", command = self.clearbox)#clear button
         self.clr.pack(side=RIGHT)
                
     def clearbox(self): #clears the text field
         self.input.delete('1.0', 'end')
+        self.master.userOutput.updateCode("")
  
-    def read_input(self, event = None): #read and update return statement from input
-        # TODO Add parsing system and get returned text.
-        self.master.outbox.updateoutput(pythontoenglish(self.input.get("1.0", '2.0')))
-        #self.master.outbox.updateoutput(self.input.get("1.0", '2.0'))
+    def exectute_code(self, event = None): #read and update return statement from input
+        inputtext = self.input.get("1.0", '2.0')
+        self.master.userOutput.updateCode(pythontoenglish(inputtext))
+        try:
+            self.master.userOutput.updateSoln(eval(inputtext))
+        except:
+            self.master.userOutput.updateSoln("This expression can't be evaluated.")
         return "break"
 
         
@@ -47,12 +51,11 @@ class Form(Frame):
 class Output(Frame): #returns user input under the 'output' frame 
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
-        self.outputtext = StringVar()
         self.outboxFrame = LabelFrame(self, text="Output", labelanchor="n")
         self.outboxFrame.pack()
-        self.s = Label(self.outboxFrame, textvariable=self.outputtext, width=125)
+        self.s = Label(self.outboxFrame, width=125)
         self.s.pack()
-        
+
     def updateoutput(self, outputtext): #update output
         self.outputtext.set(outputtext)
     
@@ -75,4 +78,13 @@ class answerbox(Frame): #The user answer in terms of code and evaluated answer i
         self.LeftTextbox.pack(side=LEFT)
         self.RightTextbox = Text(self, width = 45, height = 15) #create right textbox (evaluated output0
         self.RightTextbox.pack(side=RIGHT)
+
+    def updateCode(self, text):
+        self.LeftTextbox.delete("0.0", "end")
+        self.LeftTextbox.insert("0.0", text)
+
+    def updateSoln(self, text):
+        self.RightTextbox.delete("0.0", "end")
+        self.RightTextbox.insert("0.0", text)
+
         

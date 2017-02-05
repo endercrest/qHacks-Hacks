@@ -24,8 +24,7 @@ def split(string):
         elif i == '(':
             linespl = re.split(r'[(]+', string, 1)
             break
-
-    return linespl[0], linespl[1]
+    return linespl[0]+'(', linespl[1]
 
 def restFormat(function, rest):
     restList = []
@@ -124,7 +123,6 @@ def restFormat(function, rest):
             funcFound = False
         else:
             if part[0] is not '"':
-                print(part)
                 last = part[-1]
                 start = part[:-1]
                 if last not in SPECIAL_CHARS:

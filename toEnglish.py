@@ -63,7 +63,8 @@ def mapToEnglish(lom):
 LOOPNAMES = {"for":" a for loop where ",
              "in":" in the ",
              "while": " a while loop where ",
-             "if": " if "}
+             "if": " if ",
+             "elif": " else "}
 
 def loops(loopName):
     if loopName in LOOPNAMES:

@@ -31,6 +31,7 @@ def restFormat(function, rest):
     temp = []
     countQ = 0
     digitFlag = 0
+    prev = '' #CHANGE
     for i in rest:
         if i == '"':
             countQ += 1
@@ -39,35 +40,53 @@ def restFormat(function, rest):
                 temp.append('"')
                 restList.append(temp)
                 temp = []
+                prev = '"' #CHANGE
                 continue
         if countQ == 1:
             if i == '"':
                 temp.append('"')
+                prev = '"' #CHANGE
             else:
                 temp.append(i)
+                prev = i #CHANGE
             continue
         if countQ == 0 and i == ',':
             temp.append(',')
             restList.append(temp)
             temp = []
+            prev = ',' #CHANGE
             continue
-        elif countQ == 0 and ((i.isdigit() or i == '.') or (i == '+' or i == '-' or i == '/' or i == '*') or  i == ')'  or (i == '<' or i == '>') or i == '='):
-            if restList[-1][-1] == '=' and i == '=':
+        elif countQ == 0 and ((i.isdigit() or i == '.')): #CHANGE
+            temp.append(i) #CHANGE
+            restList.append(temp) #CHANGE
+            temp = [] #CHANGE
+            prev = i
+            continue #CHANGE
+        elif countQ == 0 and ((i == '+' or i == '-' or i == '/' or i == '*') or  i == ')'  or (i == '<' or i == '>') or i == '='): #CHANGE
+            if temp is not [] and prev is not '=': #CHANGE
+                restList.append(temp) #CHANGE
+                temp = [] #CHANGE
+            if i == '=' and prev == '=': #CHANGE
                 temp.append('==')
-                restList[-1] = temp
+                print(restList)
+                restList[-1] = temp #CHANGE
+                print(restList)
+                prev = '=='
             else:
                 temp.append(i)
                 restList.append(temp)
+                prev = i #CHANGE
             temp = []
             continue
         elif i is not ' ':
             temp.append(i)
+            prev = i #CHANGE 
             if i == '(':
                 restList.append(temp)
                 temp = []
                 continue
 
-    #print(restList)
+    print(restList)
 
     lis = []
     lis.append({'Value': function, 'Type': 'function'})
@@ -78,9 +97,9 @@ def restFormat(function, rest):
         part = ''.join(i)
         if part in FUNCTION_DEFS:
             funcFound = True
-        if i == ' ' or i == '':
+        if i == ' ' or i == '' or i == []: #CHANGE
             continue
-        elif i[0].isdigit():
+        elif i[0].isdigit() and (i is not '' and i is not ' '): #CHANGE TO THIS LINE
             temp.append(i[0])
             continue
         if i[0] == '+' or i[0] == '-' or i[0] == '/' or i[0] == '*' or i[0] == '<' or i[0] == '>' or i[0] == ',':
@@ -136,14 +155,14 @@ def restFormat(function, rest):
 
     
 def main():
-    string = 'print("Hello 2,World", round(3.14), 7=3+4, "T", abs(12), xab, 4==4)'
+    string = 'print(3+3, 5=23, x==1)'
     print(string)
     function, rest = split(string)
     lis = restFormat(function, rest)
     print('-----\n\n')
           
- #   for i in lis:
-#        print(i['Value'], i['Type'], '-----')
+    for i in lis:
+        print(i['Value'], i['Type'], '-----')
 
 main()
 

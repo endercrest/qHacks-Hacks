@@ -48,6 +48,7 @@ def mapToEnglish(lom):
             sentence.append(" compared to ")
                 
         elif(lom[i]['Type'] == 'forfunction'):
+            print (i, lom[i]['Type'], lom[i]['Value'])
             sentence.append(mapToEnglish(lom[i]['Value']))
 
         elif(lom[i]['Type'] == 'forstring'):
@@ -67,7 +68,7 @@ def mapToEnglish(lom):
     x =("".join(sentence))
     return(x[0].upper() + x[1:])
 
-LOOPNAMES = {"for":"a for loop where ",
+LOOPNAMES = {"for":" a for loop where ",
              "in":" in the "}
 
 def loops(loopName):
@@ -104,7 +105,7 @@ def split(string):
             linespl = re.split(r'[(]+', string, 1)
             break
 
-    return linespl[0]+'(', linespl[1]
+    return linespl[0], linespl[1]
 
 def restFormat(function, rest):
     restList = []
@@ -148,7 +149,10 @@ def restFormat(function, rest):
                 continue
 
     lis = []
-    lis.append({'Value': function, 'Type': 'function'})
+    if function.find('for') == False:
+        lis.append({'Value': function+'(', 'Type': 'function'})
+    else:
+        lis.append({'Value': function, 'Type': 'function'})
     temp = []
     num = ''
     for i in restList:
@@ -213,7 +217,7 @@ def restFormat(function, rest):
     return lis            
 
 def main():
-    string = 'print("hello world", x < 0 ,abs(8))'
+    string = 'for i in range(0,9))'
     print(string)
     function, rest = split(string)
     lis = restFormat(function, rest)

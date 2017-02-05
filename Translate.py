@@ -87,13 +87,11 @@ def parseExpression(rest):
                 temp = []
                 continue
 
-    # print(restList)
 
     lis = []
     temp = []
     num = ''
     for i in restList:
-        print(i)
         funcFound = False
         part = ''.join(i)
         if part in FUNCTION_DEFS:
@@ -138,7 +136,7 @@ def parseExpression(rest):
             lis.append({'Value': part, 'Type': 'bracket'})
             num = ''
             temp = []
-        elif funcFound == True:
+        elif funcFound == True and part is not '(':
             lis.append({'Value': part, 'Type': 'function'})
             funcFound = False
         else:
@@ -152,7 +150,6 @@ def parseExpression(rest):
                     lis.append({'Value': last, 'Type': SPECIAL_CHARS[last]})
             else:
                 lis.append({'Value': part, 'Type': 'string'})
-    print(lis)
     return lis
 
 
@@ -188,15 +185,14 @@ def parsefor(raw):
     combined = ""
     for i in range(2, len(parts)):
         combined += " " + parts[i]
-    if parts[2].split("(")[0] in allfunctions():
+    if parts[2].split("(")[0]+"(" in allfunctions():
         lom.append({"Value": parsefunction(combined), "Type": "forfunction"})
     else:
         lom.append({"Value": combined, "Type": "forstring"})
-
     return lom
 
 
-def whileparse(raw):
+def parsewhile(raw):
     """
     Parses a string in the format of a while statement.
 
@@ -222,7 +218,7 @@ def whileparse(raw):
 
     parseExpression(expression)
 
-    lom.append({"Value": parseExpression(expression), "Type": "loop"})
+    lom.append({"Value": parseExpression(expression), "Type": "forfunction"})
 
     return lom
 
@@ -231,15 +227,13 @@ def parsefunction(string):
     function, rest = split(string)
 
     if function == "while":
-        return whileparse(rest)
+        return parsewhile(rest)
     elif function == "if":
         return parseif(rest)
     elif function == "for":
         return parsefor(rest)
 
     ls = (parseExpression(rest))
-    if function is not 'for' or function is not 'while' or function is not 'if':
+    if (function is not 'for' or function is not 'while' or function is not 'if') and function is not '' and function is not ' ':
         ls.insert(0, {'Value': function+'(', 'Type': 'function'})
     return ls
-
-print(parsefunction("print(1 + 12 + 3)"))

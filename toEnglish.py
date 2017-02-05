@@ -24,13 +24,14 @@ def mapToEnglish(lom):
             if(lom[i]['Value'] == '+'):
                 sentence.append(" added with ")
             elif(lom[i]['Value'] == '-'):
-                sentence.append(" subtracted by ")
+                if ((i<0) and (lom[i-1]['Type'] != 'float')):
+                    sentence.append(" negative of ")
+                else:
+                    sentence.append(" subtracted by ")
             elif(lom[i]['Value'] == '*'):
                 sentence.append(" multiplied with ")
             elif(lom[i]['Value'] == '/'):
                 sentence.append(" divided by ")
-            elif(lom[i]['Value'] == '.'):
-                sentence.append(" DECIMAL ")
             elif(lom[i]['Value'] == ','):
                 sentence.append(" and ")
             elif(lom[i]['Value'] == '>'):

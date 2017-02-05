@@ -24,7 +24,7 @@ def mapToEnglish(lom):
             if(lom[i]['Value'] == '+'):
                 sentence.append(" added with ")
             elif(lom[i]['Value'] == '-'):
-                if ((i<0) and (lom[i-1]['Type'] != 'float')):
+                if ((i>0) and (lom[i-1]['Type'] != 'float')):
                     sentence.append(" negative of ")
                 else:
                     sentence.append(" subtracted by ")

@@ -51,7 +51,7 @@ def restFormat(function, rest):
             restList.append(temp)
             temp = []
             continue
-        elif countQ == 0 and ((i.isdigit() or i == '.') or (i == '+' or i == '-' or i == '/' or i == '*') or  i == ')' or i == '='):
+        elif countQ == 0 and ((i.isdigit() or i == '.') or (i == '+' or i == '-' or i == '/' or i == '*') or  i == ')'  or (i == '<' or i == '>') or i == '='):
             if restList[-1][-1] == '=' and i == '=':
                 temp.append('==')
                 restList[-1] = temp
@@ -83,7 +83,7 @@ def restFormat(function, rest):
         elif i[0].isdigit():
             temp.append(i[0])
             continue
-        if i[0] == '+' or i[0] == '-' or i[0] == '/' or i[0] == '*' or i[0] == ',':
+        if i[0] == '+' or i[0] == '-' or i[0] == '/' or i[0] == '*' or i[0] == '<' or i[0] == '>' or i[0] == ',':
             num = ''.join(temp)
             if num is not '':
                 lis.append({'Value': num, 'Type': 'float'})

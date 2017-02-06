@@ -70,12 +70,6 @@ class Output(Frame):  # returns user input under the 'output' frame
         self.s = Label(self.outboxFrame, width=125)
         self.s.pack()
 
-    def updateoutput(self, outputtext):  # update output
-        self.outputtext.set(outputtext)
-
-    def Enterkey(self, outputtext):  # create enter key shorcut
-        self.outputtext.set(outputtext)
-
 
 class AnswerLabels(Frame):  # Labels for the answers
     def __init__(self, master, **kw):

@@ -28,7 +28,7 @@ FUNCTION_DEFS = {
     # "globals(": "",
     # "hasattr(": "",
     "hash(": "the hash value of ",
-    "help(": "starts the interactive help interpreter. ",
+    # "help(": "starts the interactive help interpreter. ",
     "hex(": "the hexadecimal number of ",
     "id(": "the unique id of ",
     "input(": "prompts for input of ",
